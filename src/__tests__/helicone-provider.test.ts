@@ -634,6 +634,54 @@ describe('HeliconeProvider', () => {
       expect(headers['Helicone-Cache-Enabled']).toBe('true');
     });
 
+    it('should convert sessionPath and sessionName to headers', async () => {
+      const provider = new HeliconeProvider({
+        apiKey: 'test-helicone-key'
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [
+            {
+              message: { content: 'Test response' },
+              finish_reason: 'stop'
+            }
+          ],
+          usage: {
+            prompt_tokens: 10,
+            completion_tokens: 20,
+            total_tokens: 30
+          }
+        })
+      });
+
+      const model = provider.languageModel('gpt-4o', {
+        extraBody: {
+          helicone: {
+            sessionId: 'test-session-123',
+            sessionPath: '/chat/conversation',
+            sessionName: 'Customer Support Chat',
+            userId: 'user-456'
+          }
+        }
+      });
+
+      await model.doGenerate({
+        prompt: [{ role: 'user', content: [{ type: 'text', text: 'Hello' }] }]
+      });
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      const fetchCall = mockFetch.mock.calls[0];
+      const headers = fetchCall[1].headers;
+
+      // Verify session headers
+      expect(headers['Helicone-Session-Id']).toBe('test-session-123');
+      expect(headers['Helicone-Session-Path']).toBe('/chat/conversation');
+      expect(headers['Helicone-Session-Name']).toBe('Customer Support Chat');
+      expect(headers['Helicone-User-Id']).toBe('user-456');
+    });
+
     it('should not include helicone object in request body', async () => {
       const provider = new HeliconeProvider({
         apiKey: 'test-helicone-key'
