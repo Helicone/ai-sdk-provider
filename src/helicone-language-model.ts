@@ -57,6 +57,14 @@ export class HeliconeLanguageModel implements LanguageModelV2 {
         headers['Helicone-Session-Id'] = helicone.sessionId;
       }
 
+      if (helicone.sessionPath) {
+        headers['Helicone-Session-Path'] = helicone.sessionPath;
+      }
+
+      if (helicone.sessionName) {
+        headers['Helicone-Session-Name'] = helicone.sessionName;
+      }
+
       if (helicone.userId) {
         headers['Helicone-User-Id'] = helicone.userId;
       }
@@ -154,7 +162,7 @@ export class HeliconeLanguageModel implements LanguageModelV2 {
       ...otherExtraBody
     };
 
-    // Handle structured output
+    // Handle structured output following OpenAI format (compatible with Helicone)
     if (options.responseFormat?.type === 'json') {
       body.response_format = options.responseFormat.schema != null
         ? {

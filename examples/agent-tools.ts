@@ -10,6 +10,8 @@
     extraBody: {
       helicone: {
         sessionId: 'agent-demo-' + Date.now(),
+        sessionPath: '/test/agent-tools',
+        sessionName: 'Agent Tools Demo',
         properties: {
           feature: 'agent-tool-calling'
         },

@@ -34,6 +34,16 @@ export interface HeliconeExtraBody {
     sessionId?: string;
 
     /**
+     * Session path for organizing sessions
+     */
+    sessionPath?: string;
+
+    /**
+     * Session name for labeling sessions
+     */
+    sessionName?: string;
+
+    /**
      * User ID for tracking user-specific requests
      */
     userId?: string;
